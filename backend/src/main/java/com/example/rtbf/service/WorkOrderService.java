@@ -155,6 +155,13 @@ public class WorkOrderService {
         ticket.put("supplements", jdbc.queryForList("""
             SELECT * FROM compliance.supplement_ticket WHERE original_ticket_id = :id ORDER BY id
             """, new MapSqlParameterSource("id", ticketId)));
+        // 备份恢复复查发现的残留、处理动作与放行依据：作为新记录附在原删除工单后，
+        // 不更换当年已出具的证据说明（证据包与原处置记录保持原样）
+        ticket.put("restoreResiduals", jdbc.queryForList("""
+            SELECT r.*, b.batch_no FROM compliance.restore_residual_record r
+            JOIN compliance.restore_batch b ON b.id = r.batch_id
+            WHERE r.original_ticket_id = :id ORDER BY r.id
+            """, new MapSqlParameterSource("id", ticketId)));
         ticket.put("auditLogs", jdbc.queryForList("""
             SELECT id, actor, action, detail_json, created_at
             FROM compliance.audit_log WHERE ticket_id = :id ORDER BY id

@@ -6,7 +6,9 @@ const routes = [
   { path: '/subjects', name: 'subjects', component: () => import('../views/SubjectView.vue') },
   { path: '/tickets', name: 'tickets', component: () => import('../views/TicketListView.vue') },
   { path: '/tickets/:id', name: 'ticket-detail', component: () => import('../views/TicketDetailView.vue'), props: true },
-  { path: '/lineage', name: 'lineage', component: () => import('../views/LineageView.vue') }
+  { path: '/lineage', name: 'lineage', component: () => import('../views/LineageView.vue') },
+  { path: '/restore', name: 'restore', component: () => import('../views/RestoreView.vue') },
+  { path: '/restore/:id', name: 'restore-detail', component: () => import('../views/RestoreDetailView.vue'), props: true }
 ]
 
 const router = createRouter({ history: createWebHashHistory(), routes })

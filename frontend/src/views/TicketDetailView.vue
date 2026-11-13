@@ -195,6 +195,24 @@
         </el-table>
       </el-tab-pane>
 
+      <el-tab-pane :label="`备份恢复复查附记（${ticket.restoreResiduals?.length || 0}）`">
+        <el-alert type="info" :closable="false" style="margin-bottom:10px"
+          title="历史备份恢复复查发现的残留、处理动作与放行依据，作为新记录附在本工单后；当年已出具的证据说明与原处置记录保持原样，不更换、不追溯改写。" />
+        <el-table :data="ticket.restoreResiduals || []" border size="small">
+          <el-table-column prop="batch_no" label="恢复批次" width="190" />
+          <el-table-column label="记录类型" width="130">
+            <template #default="{ row }">{{ residualTypeLabel(row.residual_type) }}</template>
+          </el-table-column>
+          <el-table-column label="处理动作" width="150">
+            <template #default="{ row }">{{ actionLabel(row.action_taken) }}</template>
+          </el-table-column>
+          <el-table-column prop="item_ref" label="恢复条目" width="150" show-overflow-tooltip />
+          <el-table-column prop="basis" label="放行/拦截依据" min-width="280" show-overflow-tooltip />
+          <el-table-column prop="recorded_by" label="记录人" width="110" />
+          <el-table-column prop="created_at" label="时间" width="200" />
+        </el-table>
+      </el-tab-pane>
+
       <el-tab-pane label="审计时间线">
         <el-timeline>
           <el-timeline-item v-for="log in ticket.auditLogs" :key="log.id" :timestamp="log.created_at" placement="top">
@@ -335,6 +353,12 @@ function dispStatusType(s) {
 }
 function itemStatusLabel(s) {
   return { IN_SCOPE: '纳入范围', PENDING_HUMAN: '待人工确认', OUT_OF_SCOPE: '排除' }[s] || s
+}
+function residualTypeLabel(t) {
+  return { RESTORED_RESIDUAL: '恢复残留', MANUAL_SUPPRESSED: '人工拦截', MANUAL_RELEASED: '人工放行', OPEN_BASIS: '放行依据' }[t] || t
+}
+function actionLabel(a) {
+  return { SUPPRESSED_IN_QUARANTINE: '隔离区拦截', RELEASED_ONLINE: '释放上线', KEPT_PENDING: '挂起待处理', BASIS_RECORDED: '依据登记' }[a] || a
 }
 onMounted(load)
 </script>

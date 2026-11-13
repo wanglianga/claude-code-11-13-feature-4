@@ -14,7 +14,8 @@ spring:
     enabled: true
     baseline-on-migrate: true
     default-schema: compliance
-    schemas: compliance,biz
+    # quarantine：备份恢复隔离区，恢复数据先落隔离 schema，复查通过前绝不进入线上 biz 表
+    schemas: compliance,biz,quarantine
   jackson:
     time-zone: Asia/Shanghai
     serialization:

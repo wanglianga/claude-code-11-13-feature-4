@@ -58,6 +58,7 @@ class RtbfWorkflowIntegrationTest {
              java.sql.Statement st = c.createStatement()) {
             st.execute("DROP SCHEMA IF EXISTS compliance CASCADE");
             st.execute("DROP SCHEMA IF EXISTS biz CASCADE");
+            st.execute("DROP SCHEMA IF EXISTS quarantine CASCADE");
             // Flyway 历史表默认落在 public，必须一并清除，否则 Flyway 认为已是 v5 而跳过建表
             st.execute("DROP TABLE IF EXISTS public.flyway_schema_history CASCADE");
         } catch (java.sql.SQLException e) {
@@ -67,9 +68,10 @@ class RtbfWorkflowIntegrationTest {
 
     @BeforeAll
     void resetDatabase() {
-        // 显式删除两个 schema，再由 Flyway 从零迁移，保证每个测试类拿到干净演示基线
+        // 显式删除三个 schema，再由 Flyway 从零迁移，保证每个测试类拿到干净演示基线
         jdbc.execute("DROP SCHEMA IF EXISTS compliance CASCADE");
         jdbc.execute("DROP SCHEMA IF EXISTS biz CASCADE");
+        jdbc.execute("DROP SCHEMA IF EXISTS quarantine CASCADE");
         jdbc.execute("DROP TABLE IF EXISTS public.flyway_schema_history CASCADE");
         flyway.migrate();
     }
